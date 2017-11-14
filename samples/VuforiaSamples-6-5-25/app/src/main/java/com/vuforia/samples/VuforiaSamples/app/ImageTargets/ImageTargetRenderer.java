@@ -32,6 +32,7 @@ import com.vuforia.samples.SampleApplication.SampleAppRendererControl;
 import com.vuforia.samples.SampleApplication.SampleApplicationSession;
 import com.vuforia.samples.SampleApplication.utils.CubeShaders;
 import com.vuforia.samples.SampleApplication.utils.LoadingDialogHandler;
+import com.vuforia.samples.SampleApplication.utils.Patrick;
 import com.vuforia.samples.SampleApplication.utils.SampleApplication3DModel;
 import com.vuforia.samples.SampleApplication.utils.SampleUtils;
 import com.vuforia.samples.SampleApplication.utils.Teapot;
@@ -51,20 +52,24 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
     
     private int shaderProgramID;
     private int vertexHandle;
+    private int normalHandle;
     private int textureCoordHandle;
     private int mvpMatrixHandle;
     private int texSampler2DHandle;
     
     private Teapot mTeapot;
+//    private Patrick mPatrick;
 
     private float kBuildingScale = 0.012f;
+//    private float kBuildingScale = 12f;
     private SampleApplication3DModel mBuildingsModel;
 
     private boolean mIsActive = false;
     private boolean mModelIsLoaded = false;
     
     private static final float OBJECT_SCALE_FLOAT = 0.003f;
-    
+//    private static final float OBJECT_SCALE_FLOAT = 120.0f;
+
     
     public ImageTargetRenderer(ImageTargets activity, SampleApplicationSession session)
     {
@@ -151,6 +156,8 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
 
         vertexHandle = GLES20.glGetAttribLocation(shaderProgramID,
             "vertexPosition");
+        normalHandle = GLES20.glGetAttribLocation(shaderProgramID,
+                "vertexNormal");
         textureCoordHandle = GLES20.glGetAttribLocation(shaderProgramID,
             "vertexTexCoord");
         mvpMatrixHandle = GLES20.glGetUniformLocation(shaderProgramID,
@@ -160,6 +167,7 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
 
         if(!mModelIsLoaded) {
             mTeapot = new Teapot();
+//            mPatrick = new Patrick(mActivity.getResources().getAssets());
 
             try {
                 mBuildingsModel = new SampleApplication3DModel();
@@ -236,8 +244,15 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
                         false, 0, mTeapot.getVertices());
                 GLES20.glVertexAttribPointer(textureCoordHandle, 2,
                         GLES20.GL_FLOAT, false, 0, mTeapot.getTexCoords());
+//                GLES20.glVertexAttribPointer(vertexHandle, 3, GLES20.GL_FLOAT,
+//                        false, 0, mPatrick.getVertices());
+//                GLES20.glVertexAttribPointer(normalHandle, 3,
+//                        GLES20.GL_FLOAT, false, 0, mPatrick.getNormals());
+//                GLES20.glVertexAttribPointer(textureCoordHandle, 2,
+//                        GLES20.GL_FLOAT, false, 0, mPatrick.getTexCoords());
 
                 GLES20.glEnableVertexAttribArray(vertexHandle);
+                GLES20.glEnableVertexAttribArray(normalHandle);
                 GLES20.glEnableVertexAttribArray(textureCoordHandle);
 
                 // activate texture 0, bind it, and pass to shader
@@ -254,18 +269,29 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
                 GLES20.glDrawElements(GLES20.GL_TRIANGLES,
                         mTeapot.getNumObjectIndex(), GLES20.GL_UNSIGNED_SHORT,
                         mTeapot.getIndices());
-
+//                GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0,
+//                        mPatrick.getNumObjectVertex());
                 // disable the enabled arrays
                 GLES20.glDisableVertexAttribArray(vertexHandle);
+                GLES20.glDisableVertexAttribArray(normalHandle);
                 GLES20.glDisableVertexAttribArray(textureCoordHandle);
+
+                SampleUtils.checkGLError("Renderer DrawPatrick");
             } else {
                 GLES20.glDisable(GLES20.GL_CULL_FACE);
                 GLES20.glVertexAttribPointer(vertexHandle, 3, GLES20.GL_FLOAT,
                         false, 0, mBuildingsModel.getVertices());
                 GLES20.glVertexAttribPointer(textureCoordHandle, 2,
                         GLES20.GL_FLOAT, false, 0, mBuildingsModel.getTexCoords());
+//                GLES20.glVertexAttribPointer(vertexHandle, 3, GLES20.GL_FLOAT,
+//                        false, 0, mPatrick.getVertices());
+//                GLES20.glVertexAttribPointer(normalHandle, 3,
+//                        GLES20.GL_FLOAT, false, 0, mPatrick.getNormals());
+//                GLES20.glVertexAttribPointer(textureCoordHandle, 2,
+//                        GLES20.GL_FLOAT, false, 0, mPatrick.getTexCoords());
 
                 GLES20.glEnableVertexAttribArray(vertexHandle);
+                GLES20.glEnableVertexAttribArray(normalHandle);
                 GLES20.glEnableVertexAttribArray(textureCoordHandle);
 
                 GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
@@ -276,7 +302,8 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
                 GLES20.glUniform1i(texSampler2DHandle, 0);
                 GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0,
                         mBuildingsModel.getNumObjectVertex());
-
+//                GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0,
+//                        mPatrick.getNumObjectVertex());
                 SampleUtils.checkGLError("Renderer DrawBuildings");
             }
 
