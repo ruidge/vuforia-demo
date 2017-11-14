@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
+  <Tracking>
+    <ImageTarget name="DmallLogImage" size="0.116800 0.064928" />
+    <ImageTarget name="WechatIMG11" size="0.164400 0.205942" />
+  </Tracking>
+</QCARConfig>
