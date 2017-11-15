@@ -223,7 +223,9 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
             // deal with the modelview and projection matrices
             float[] modelViewProjection = new float[16];
 
-            Matrix.setRotateM(modelViewMatrix, 0, mAngle, 0, 0, -1.0f);
+//            Matrix.setRotateM(modelViewMatrix, 0, mAngle, 0, 0, -1f);
+            Matrix.rotateM(modelViewMatrix, 0, mX, 0, 1, 0);
+            Matrix.rotateM(modelViewMatrix, 0, mY, 1, 0, 0);
 
             if (!mActivity.isExtendedTrackingActive()) {
                 Matrix.translateM(modelViewMatrix, 0, 0.0f, 0.0f,
@@ -330,7 +332,7 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
 
     }
 
-    public volatile float mAngle;
+    private float mAngle;
 
     public float getAngle() {
         return mAngle;
@@ -340,4 +342,31 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
         mAngle = angle;
     }
 
+    private float mX;
+    private float mY;
+    private float mZ;
+
+    public float getX() {
+        return mX;
+    }
+
+    public void setX(float mX) {
+        this.mX = mX;
+    }
+
+    public float getY() {
+        return mY;
+    }
+
+    public void setY(float mY) {
+        this.mY = mY;
+    }
+
+    public float getZ() {
+        return mZ;
+    }
+
+    public void setZ(float mZ) {
+        this.mZ = mZ;
+    }
 }
