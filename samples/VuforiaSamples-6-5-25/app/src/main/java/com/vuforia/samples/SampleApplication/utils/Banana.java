@@ -19,8 +19,8 @@ import java.io.InputStreamReader;
 import java.nio.Buffer;
 
 
-public class Patrick extends MeshObject {
-    private static final String TAG = "Patrick";
+public class Banana extends MeshObject {
+    private static final String TAG = "Banana";
 
     private Buffer mVertBuff;//顶点
     private Buffer mTexCoordBuff;//纹理坐标
@@ -28,7 +28,7 @@ public class Patrick extends MeshObject {
     private int verticesNumber = 0;
     private AssetManager assetManager;
 
-    public Patrick(AssetManager inputassetManager) {
+    public Banana(AssetManager inputassetManager) {
         this.assetManager = inputassetManager;
         setVerts();
         setTexCoords();
@@ -143,7 +143,7 @@ public class Patrick extends MeshObject {
     private void setVerts() {
         int num = 0;
         try {
-            num = loadVertsFromModel("patrick/verts.txt");
+            num = loadVertsFromModel("banana/verts.txt");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -157,7 +157,7 @@ public class Patrick extends MeshObject {
     private void setTexCoords() {
         int num = 0;
         try {
-            num = loadTexCoordsFromModel("patrick/texcoords.txt");
+            num = loadTexCoordsFromModel("banana/texcoords.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -170,7 +170,7 @@ public class Patrick extends MeshObject {
     private void setNorms() {
         int num = 0;
         try {
-            num = loadNormsFromModel("patrick/norms.txt");
+            num = loadNormsFromModel("banana/norms.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }
