@@ -60,6 +60,8 @@ public class ImageTargets extends Activity implements SampleApplicationControl,
         SampleAppMenuInterface {
     private static final String LOGTAG = "ImageTargets";
 
+    public static final int NUM_TARGETS = 2;
+
     SampleApplicationSession vuforiaAppSession;
 
     private DataSet mCurrentDataset;
@@ -156,25 +158,37 @@ public class ImageTargets extends Activity implements SampleApplicationControl,
 
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
-            boolean result = CameraDevice.getInstance().setFocusMode(
-                    CameraDevice.FOCUS_MODE.FOCUS_MODE_TRIGGERAUTO);
-            if (!result)
-                Log.e("SingleTapUp", "Unable to trigger focus");
+            final Handler autofocusHandler = new Handler();
+            for (int i = 0; i < NUM_TARGETS; i++) {
+                // Verify that the tap happened inside the target
+                if (mRenderer != null /*&& mRenderer.isTapOnScreenInsideTarget(i, e.getX(),
+                        e.getY())*/) {
+                    autofocusHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "clicked", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    break;
+                } else {
+                    boolean result = CameraDevice.getInstance().setFocusMode(
+                            CameraDevice.FOCUS_MODE.FOCUS_MODE_TRIGGERAUTO);
+                    if (!result)
+                        Log.e("SingleTapConfirmed", "Unable to trigger focus");
 
-            // Generates a Handler to trigger continuous auto-focus
-            // after 1 second
-            autofocusHandler.postDelayed(new Runnable() {
-                public void run() {
-                    if (mContAutofocus) {
-                        final boolean autofocusResult = CameraDevice.getInstance().setFocusMode(
-                                CameraDevice.FOCUS_MODE.FOCUS_MODE_CONTINUOUSAUTO);
+                    // Generates a Handler to trigger continuous auto-focus
+                    // after 1 second
+                    autofocusHandler.postDelayed(new Runnable() {
+                        public void run() {
+                            final boolean autofocusResult = CameraDevice.getInstance().setFocusMode(
+                                    CameraDevice.FOCUS_MODE.FOCUS_MODE_CONTINUOUSAUTO);
 
-                        if (!autofocusResult)
-                            Log.e("SingleTapUp", "Unable to re-enable continuous auto-focus");
-                    }
+                            if (!autofocusResult)
+                                Log.e("SingleTapConfirmed", "Unable to re-enable continuous auto-focus");
+                        }
+                    }, 1000L);
                 }
-            }, 1000L);
-
+            }
             return true;
         }
     }
