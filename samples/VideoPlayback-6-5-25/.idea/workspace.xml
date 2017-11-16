@@ -10,18 +10,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="485fe1cf-9e7a-43e5-bf2b-2773a760fc5d" name="Default" comment="video playback">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../VuforiaSamples-6-5-25/app/src/main/java/com/vuforia/samples/VuforiaSamples/app/demo/DemoActivity.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../VuforiaSamples-6-5-25/app/src/main/java/com/vuforia/samples/VuforiaSamples/app/demo/DemoRenderer.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../VuforiaSamples-6-5-25/app/src/main/java/com/vuforia/samples/VuforiaSamples/app/demo/DemoGLView.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/gradlew.bat" afterPath="$PROJECT_DIR$/gradlew.bat" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../VuforiaSamples-6-5-25/app/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/../VuforiaSamples-6-5-25/app/src/main/AndroidManifest.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../VuforiaSamples-6-5-25/app/src/main/java/com/vuforia/samples/VuforiaSamples/app/CylinderTargets/CylinderTargetRenderer.java" afterPath="$PROJECT_DIR$/../VuforiaSamples-6-5-25/app/src/main/java/com/vuforia/samples/VuforiaSamples/app/CylinderTargets/CylinderTargetRenderer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../VuforiaSamples-6-5-25/app/src/main/java/com/vuforia/samples/VuforiaSamples/app/ImageTargets/ImageTargetRenderer.java" afterPath="$PROJECT_DIR$/../VuforiaSamples-6-5-25/app/src/main/java/com/vuforia/samples/VuforiaSamples/app/ImageTargets/ImageTargetRenderer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../VuforiaSamples-6-5-25/app/src/main/java/com/vuforia/samples/VuforiaSamples/app/ImageTargets/ImageTargets.java" afterPath="$PROJECT_DIR$/../VuforiaSamples-6-5-25/app/src/main/java/com/vuforia/samples/VuforiaSamples/app/ImageTargets/ImageTargets.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../VuforiaSamples-6-5-25/app/src/main/java/com/vuforia/samples/VuforiaSamples/app/ObjectRecognition/ObjectTargetRenderer.java" afterPath="$PROJECT_DIR$/../VuforiaSamples-6-5-25/app/src/main/java/com/vuforia/samples/VuforiaSamples/app/ObjectRecognition/ObjectTargetRenderer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../VuforiaSamples-6-5-25/app/src/main/java/com/vuforia/samples/VuforiaSamples/app/TextRecognition/TextRecoRenderer.java" afterPath="$PROJECT_DIR$/../VuforiaSamples-6-5-25/app/src/main/java/com/vuforia/samples/VuforiaSamples/app/TextRecognition/TextRecoRenderer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../VuforiaSamples-6-5-25/app/src/main/java/com/vuforia/samples/VuforiaSamples/app/VuMark/VuMarkRenderer.java" afterPath="$PROJECT_DIR$/../VuforiaSamples-6-5-25/app/src/main/java/com/vuforia/samples/VuforiaSamples/app/VuMark/VuMarkRenderer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../VuforiaSamples-6-5-25/app/src/main/java/com/vuforia/samples/VuforiaSamples/ui/ActivityList/ActivityLauncher.java" afterPath="$PROJECT_DIR$/../VuforiaSamples-6-5-25/app/src/main/java/com/vuforia/samples/VuforiaSamples/ui/ActivityList/ActivityLauncher.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../VuforiaSamples-6-5-25/app/src/main/java/com/vuforia/samples/VuforiaSamples/app/demo/DemoActivity.java" afterPath="$PROJECT_DIR$/../VuforiaSamples-6-5-25/app/src/main/java/com/vuforia/samples/VuforiaSamples/app/demo/DemoActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../VuforiaSamples-6-5-25/app/src/main/java/com/vuforia/samples/VuforiaSamples/app/demo/DemoRenderer.java" afterPath="$PROJECT_DIR$/../VuforiaSamples-6-5-25/app/src/main/java/com/vuforia/samples/VuforiaSamples/app/demo/DemoRenderer.java" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -81,7 +74,24 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="4233">
               <caret line="284" column="19" lean-forward="false" selection-start-line="284" selection-start-column="19" selection-end-line="284" selection-end-column="19" />
-              <folding />
+              <folding>
+                <element signature="e#0#27485#0" expanded="false" />
+                <element signature="imports" expanded="false" />
+                <element signature="e#2416#2417#0" expanded="false" />
+                <element signature="e#2453#2454#0" expanded="false" />
+                <element signature="e#2517#2518#0" expanded="false" />
+                <element signature="e#2552#2553#0" expanded="false" />
+                <element signature="e#2905#2906#0" expanded="false" />
+                <element signature="e#2942#2943#0" expanded="false" />
+                <element signature="e#3006#3007#0" expanded="false" />
+                <element signature="e#3041#3042#0" expanded="false" />
+                <element signature="e#10673#10674#0" expanded="false" />
+                <element signature="e#10709#10710#0" expanded="false" />
+                <element signature="e#24176#24177#0" expanded="false" />
+                <element signature="e#24226#24227#0" expanded="false" />
+                <element signature="e#24736#24737#0" expanded="false" />
+                <element signature="e#24781#24782#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -1923,7 +1933,7 @@
       <option name="ACTIVITY_CLASS" value="" />
       <method>
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1510800694002" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1510813869368" />
       </method>
     </configuration>
     <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests">
@@ -1971,7 +1981,7 @@
       </Profilers>
       <method>
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1510800694002" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1510813869368" />
       </method>
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -2133,7 +2143,7 @@
       <option name="ACTIVITY_CLASS" value="" />
       <method>
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1510800694003" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1510813869369" />
       </method>
     </configuration>
     <list size="1">
@@ -2270,7 +2280,24 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4233">
           <caret line="284" column="19" lean-forward="false" selection-start-line="284" selection-start-column="19" selection-end-line="284" selection-end-column="19" />
-          <folding />
+          <folding>
+            <element signature="e#0#27485#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#2416#2417#0" expanded="false" />
+            <element signature="e#2453#2454#0" expanded="false" />
+            <element signature="e#2517#2518#0" expanded="false" />
+            <element signature="e#2552#2553#0" expanded="false" />
+            <element signature="e#2905#2906#0" expanded="false" />
+            <element signature="e#2942#2943#0" expanded="false" />
+            <element signature="e#3006#3007#0" expanded="false" />
+            <element signature="e#3041#3042#0" expanded="false" />
+            <element signature="e#10673#10674#0" expanded="false" />
+            <element signature="e#10709#10710#0" expanded="false" />
+            <element signature="e#24176#24177#0" expanded="false" />
+            <element signature="e#24226#24227#0" expanded="false" />
+            <element signature="e#24736#24737#0" expanded="false" />
+            <element signature="e#24781#24782#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -2366,7 +2393,24 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4233">
           <caret line="284" column="19" lean-forward="false" selection-start-line="284" selection-start-column="19" selection-end-line="284" selection-end-column="19" />
-          <folding />
+          <folding>
+            <element signature="e#0#27485#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#2416#2417#0" expanded="false" />
+            <element signature="e#2453#2454#0" expanded="false" />
+            <element signature="e#2517#2518#0" expanded="false" />
+            <element signature="e#2552#2553#0" expanded="false" />
+            <element signature="e#2905#2906#0" expanded="false" />
+            <element signature="e#2942#2943#0" expanded="false" />
+            <element signature="e#3006#3007#0" expanded="false" />
+            <element signature="e#3041#3042#0" expanded="false" />
+            <element signature="e#10673#10674#0" expanded="false" />
+            <element signature="e#10709#10710#0" expanded="false" />
+            <element signature="e#24176#24177#0" expanded="false" />
+            <element signature="e#24226#24227#0" expanded="false" />
+            <element signature="e#24736#24737#0" expanded="false" />
+            <element signature="e#24781#24782#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>

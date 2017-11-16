@@ -1,12 +1,3 @@
-/*===============================================================================
-Copyright (c) 2016 PTC Inc. All Rights Reserved.
-
-Copyright (c) 2012-2014 Qualcomm Connected Experiences, Inc. All Rights Reserved.
-
-Vuforia is a trademark of PTC Inc., registered in the United States and other 
-countries.
-===============================================================================*/
-
 package com.vuforia.samples.VuforiaSamples.app.demo;
 
 import android.opengl.GLES20;
@@ -64,16 +55,13 @@ public class DemoRenderer implements GLSurfaceView.Renderer, SampleAppRendererCo
     private Patrick mPatrick;
 //    private Banana mBanana;
 
-    //    private float kBuildingScale = 0.012f;
-    private float kBuildingScale = 12f;
     private SampleApplication3DModel mBuildingsModel;
 
     private boolean mIsActive = false;
     private boolean mModelIsLoaded = false;
 
-    //    private static final float OBJECT_SCALE_FLOAT = 0.003f;
-//    private static final float OBJECT_SCALE_FLOAT = 0.005f;
-    private static final float OBJECT_SCALE_FLOAT = 0.08f;
+    //    private static final float OBJECT_SCALE_FLOAT = 0.08f;
+    private static final float OBJECT_SCALE_FLOAT = 2f;
 
 
     private Matrix44F tappingProjectionMatrix = null;
@@ -277,99 +265,46 @@ public class DemoRenderer implements GLSurfaceView.Renderer, SampleAppRendererCo
             Matrix.rotateM(modelViewMatrix, 0, mX, 0, 1, 0);
             Matrix.rotateM(modelViewMatrix, 0, mY, 1, 0, 0);
 
-            Matrix.scaleM(modelViewMatrix, 0, targetPositiveDimensions.getData()[0],
-                    targetPositiveDimensions.getData()[0] * ratio, targetPositiveDimensions.getData()[0]);
-//            Matrix.multiplyMM(modelViewMatrix, 0,
-//                    projectionMatrix, 0, modelViewMatrix, 0);
-
-//            if (!mActivity.isExtendedTrackingActive())
-            {
-                Matrix.translateM(modelViewMatrix, 0, 0.0f, 0.0f,
-                        OBJECT_SCALE_FLOAT);
-//                Matrix.scaleM(modelViewMatrix, 0, OBJECT_SCALE_FLOAT,
-//                        OBJECT_SCALE_FLOAT, OBJECT_SCALE_FLOAT);
-            }
-//            else {
-//                Matrix.rotateM(modelViewMatrix, 0, 90.0f, 1.0f, 0, 0);
-//                Matrix.scaleM(modelViewMatrix, 0, kBuildingScale,
-//                        kBuildingScale, kBuildingScale);
-//            }
-
+            Matrix.scaleM(modelViewMatrix, 0, targetPositiveDimensions.getData()[0] * OBJECT_SCALE_FLOAT,
+                    targetPositiveDimensions.getData()[0] * ratio * OBJECT_SCALE_FLOAT,
+                    targetPositiveDimensions.getData()[0] * OBJECT_SCALE_FLOAT);
+            Matrix.translateM(modelViewMatrix, 0, 0.0f, 0.0f,
+                    0);
             Matrix.multiplyMM(modelViewProjection, 0, projectionMatrix, 0, modelViewMatrix, 0);
 
             // activate the shader program and bind the vertex/normal/tex coords
             GLES20.glUseProgram(shaderProgramID);
 
-//            if (!mActivity.isExtendedTrackingActive())
-            {
-//                GLES20.glVertexAttribPointer(vertexHandle, 3, GLES20.GL_FLOAT,
-//                        false, 0, mTeapot.getVertices());
-//                GLES20.glVertexAttribPointer(textureCoordHandle, 2,
-//                        GLES20.GL_FLOAT, false, 0, mTeapot.getTexCoords());
-                GLES20.glVertexAttribPointer(vertexHandle, 3, GLES20.GL_FLOAT,
-                        false, 0, mPatrick.getVertices());
-                GLES20.glVertexAttribPointer(normalHandle, 3,
-                        GLES20.GL_FLOAT, false, 0, mPatrick.getNormals());
-                GLES20.glVertexAttribPointer(textureCoordHandle, 2,
-                        GLES20.GL_FLOAT, false, 0, mPatrick.getTexCoords());
+            GLES20.glVertexAttribPointer(vertexHandle, 3, GLES20.GL_FLOAT,
+                    false, 0, mPatrick.getVertices());
+            GLES20.glVertexAttribPointer(normalHandle, 3,
+                    GLES20.GL_FLOAT, false, 0, mPatrick.getNormals());
+            GLES20.glVertexAttribPointer(textureCoordHandle, 2,
+                    GLES20.GL_FLOAT, false, 0, mPatrick.getTexCoords());
 
-                GLES20.glEnableVertexAttribArray(vertexHandle);
-                GLES20.glEnableVertexAttribArray(normalHandle);
-                GLES20.glEnableVertexAttribArray(textureCoordHandle);
+            GLES20.glEnableVertexAttribArray(vertexHandle);
+            GLES20.glEnableVertexAttribArray(normalHandle);
+            GLES20.glEnableVertexAttribArray(textureCoordHandle);
 
-                // activate texture 0, bind it, and pass to shader
-                GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-                GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,
-                        mTextures.get(textureIndex).mTextureID[0]);
-                GLES20.glUniform1i(texSampler2DHandle, 0);
+            // activate texture 0, bind it, and pass to shader
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,
+                    mTextures.get(textureIndex).mTextureID[0]);
+            GLES20.glUniform1i(texSampler2DHandle, 0);
 
-                // pass the model view matrix to the shader
-                GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false,
-                        modelViewProjection, 0);
+            // pass the model view matrix to the shader
+            GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false,
+                    modelViewProjection, 0);
 
-                // finally draw the teapot
-//                GLES20.glDrawElements(GLES20.GL_TRIANGLES,
-//                        mTeapot.getNumObjectIndex(), GLES20.GL_UNSIGNED_SHORT,
-//                        mTeapot.getIndices());
+            // finally draw the teapot
 //                GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0,
 //                        mTeapot.getNumObjectVertex());
-                GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0,
-                        mPatrick.getNumObjectVertex());
-                // disable the enabled arrays
-                GLES20.glDisableVertexAttribArray(vertexHandle);
-                GLES20.glDisableVertexAttribArray(normalHandle);
-                GLES20.glDisableVertexAttribArray(textureCoordHandle);
-
-            }
-//            else {
-//                GLES20.glDisable(GLES20.GL_CULL_FACE);
-//                GLES20.glVertexAttribPointer(vertexHandle, 3, GLES20.GL_FLOAT,
-//                        false, 0, mBuildingsModel.getVertices());
-//                GLES20.glVertexAttribPointer(textureCoordHandle, 2,
-//                        GLES20.GL_FLOAT, false, 0, mBuildingsModel.getTexCoords());
-////                GLES20.glVertexAttribPointer(vertexHandle, 3, GLES20.GL_FLOAT,
-////                        false, 0, mPatrick.getVertices());
-////                GLES20.glVertexAttribPointer(normalHandle, 3,
-////                        GLES20.GL_FLOAT, false, 0, mPatrick.getNormals());
-////                GLES20.glVertexAttribPointer(textureCoordHandle, 2,
-////                        GLES20.GL_FLOAT, false, 0, mPatrick.getTexCoords());
-//
-//                GLES20.glEnableVertexAttribArray(vertexHandle);
-//                GLES20.glEnableVertexAttribArray(normalHandle);
-//                GLES20.glEnableVertexAttribArray(textureCoordHandle);
-//
-//                GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-//                GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,
-//                        mTextures.get(3).mTextureID[0]);
-//                GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false,
-//                        modelViewProjection, 0);
-//                GLES20.glUniform1i(texSampler2DHandle, 0);
-//                GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0,
-//                        mBuildingsModel.getNumObjectVertex());
-////                GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0,
-////                        mPatrick.getNumObjectVertex());
-//                SampleUtils.checkGLError("Renderer DrawBuildings");
-//            }
+            GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0,
+                    mPatrick.getNumObjectVertex());
+            // disable the enabled arrays
+            GLES20.glDisableVertexAttribArray(vertexHandle);
+            GLES20.glDisableVertexAttribArray(normalHandle);
+            GLES20.glDisableVertexAttribArray(textureCoordHandle);
 
             SampleUtils.checkGLError("Render Frame");
 
