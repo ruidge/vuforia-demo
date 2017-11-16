@@ -39,7 +39,7 @@ import com.vuforia.samples.SampleApplication.utils.SampleUtils;
 import com.vuforia.samples.SampleApplication.utils.Texture;
 
 
-// The renderer class for the ImageTargets sample. 
+// The renderer class for the DemoActivity sample.
 public class ObjectTargetRenderer implements GLSurfaceView.Renderer, SampleAppRendererControl
 {
     private static final String LOGTAG = "ObjectTargetRenderer";

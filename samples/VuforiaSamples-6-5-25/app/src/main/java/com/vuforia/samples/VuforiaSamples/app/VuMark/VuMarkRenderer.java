@@ -50,7 +50,7 @@ import java.util.Vector;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-// The renderer class for the ImageTargets sample.
+// The renderer class for the DemoActivity sample.
 public class VuMarkRenderer implements GLSurfaceView.Renderer, SampleAppRendererControl
 {
     private static final String LOGTAG = "VuMarkRenderer";
