@@ -20,14 +20,11 @@ import com.vuforia.samples.SampleApplication.SampleAppRenderer;
 import com.vuforia.samples.SampleApplication.SampleAppRendererControl;
 import com.vuforia.samples.SampleApplication.SampleApplicationSession;
 import com.vuforia.samples.SampleApplication.utils.CubeShaders;
-import com.vuforia.samples.SampleApplication.utils.LoadingDialogHandler;
 import com.vuforia.samples.SampleApplication.utils.Patrick;
-import com.vuforia.samples.SampleApplication.utils.SampleApplication3DModel;
 import com.vuforia.samples.SampleApplication.utils.SampleMath;
 import com.vuforia.samples.SampleApplication.utils.SampleUtils;
 import com.vuforia.samples.SampleApplication.utils.Texture;
 
-import java.io.IOException;
 import java.util.Vector;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -55,17 +52,14 @@ public class DemoRenderer implements GLSurfaceView.Renderer, SampleAppRendererCo
     private Patrick mPatrick;
 //    private Banana mBanana;
 
-    private SampleApplication3DModel mBuildingsModel;
-
     private boolean mIsActive = false;
-    private boolean mModelIsLoaded = false;
 
     //    private static final float OBJECT_SCALE_FLOAT = 0.08f;
     private static final float OBJECT_SCALE_FLOAT = 2f;
 
 
     private Matrix44F tappingProjectionMatrix = null;
-    private Matrix44F modelViewMatrix = null;
+    private Matrix44F mModelViewMatrix = null;
     private Vec3F targetPositiveDimensions = null;
 
     // These hold the aspect ratio of both the the keyframe
@@ -79,7 +73,7 @@ public class DemoRenderer implements GLSurfaceView.Renderer, SampleAppRendererCo
         mSampleAppRenderer = new SampleAppRenderer(this, mActivity, Device.MODE.MODE_AR, false, 0.01f, 5f);
 
         targetPositiveDimensions = new Vec3F();
-        modelViewMatrix = new Matrix44F();
+        mModelViewMatrix = new Matrix44F();
 
     }
 
@@ -170,24 +164,9 @@ public class DemoRenderer implements GLSurfaceView.Renderer, SampleAppRendererCo
         keyframeQuadAspectRatio = (float) mTextures
                 .get(0).mHeight / (float) mTextures.get(0).mWidth;
 
-        if (!mModelIsLoaded) {
-//            mTeapot = new Teapot();
-            mPatrick = new Patrick(mActivity.getResources().getAssets());
-//            mBanana = new Banana(mActivity.getResources().getAssets());
-
-            try {
-                mBuildingsModel = new SampleApplication3DModel();
-                mBuildingsModel.loadModel(mActivity.getResources().getAssets(),
-                        "ImageTargets/Buildings.txt");
-                mModelIsLoaded = true;
-            } catch (IOException e) {
-                Log.e(LOGTAG, "Unable to load buildings");
-            }
-
-            // Hide the Loading Dialog
-            mActivity.loadingDialogHandler
-                    .sendEmptyMessage(LoadingDialogHandler.HIDE_LOADING_DIALOG);
-        }
+//        mTeapot = new Teapot();
+//        mBanana = new Banana(mActivity.getResources().getAssets());
+        mPatrick = new Patrick(mActivity.getResources().getAssets());
 
     }
 
@@ -209,11 +188,6 @@ public class DemoRenderer implements GLSurfaceView.Renderer, SampleAppRendererCo
         GLES20.glEnable(GLES20.GL_CULL_FACE);
         GLES20.glCullFace(GLES20.GL_BACK);
 
-        if (tappingProjectionMatrix == null) {
-            tappingProjectionMatrix = new Matrix44F();
-            tappingProjectionMatrix.setData(projectionMatrix);
-        }
-
         float temp[] = {0.0f, 0.0f, 0.0f};
         targetPositiveDimensions.setData(temp);
 
@@ -222,13 +196,17 @@ public class DemoRenderer implements GLSurfaceView.Renderer, SampleAppRendererCo
             TrackableResult result = state.getTrackableResult(tIdx);
             Trackable trackable = result.getTrackable();
             printUserData(trackable);
-            Matrix44F modelViewMatrix_Vuforia = Tool
+//            Matrix44F modelViewMatrix_Vuforia = Tool
+//                    .convertPose2GLMatrix(result.getPose());
+            mModelViewMatrix = Tool
                     .convertPose2GLMatrix(result.getPose());
-            modelViewMatrix = Tool
-                    .convertPose2GLMatrix(result.getPose());
-//            modelViewMatrix = modelViewMatrix_Vuforia;
 
-            float[] modelViewMatrix = modelViewMatrix_Vuforia.getData();
+            float[] modelViewMatrix = mModelViewMatrix.getData();
+//            if (tappingProjectionMatrix == null)
+            {
+                tappingProjectionMatrix = new Matrix44F();
+                tappingProjectionMatrix.setData(projectionMatrix);
+            }
 
 //            int textureIndex = trackable.getName().equalsIgnoreCase("stones") ? 0
 //                    : 1;
@@ -236,14 +214,14 @@ public class DemoRenderer implements GLSurfaceView.Renderer, SampleAppRendererCo
                     : 1;
             textureIndex = trackable.getName().equalsIgnoreCase("tarmac") ? 2
                     : textureIndex;
-
+            textureIndex = 0;
             ImageTarget imageTarget = (ImageTarget) result
                     .getTrackable();
             targetPositiveDimensions = imageTarget.getSize();
             // The pose delivers the center of the target, thus the dimensions
             // go from -width/2 to width/2, same for height
-            temp[0] = targetPositiveDimensions.getData()[0] / 2.0f;
-            temp[1] = targetPositiveDimensions.getData()[1] / 2.0f;
+            temp[0] = targetPositiveDimensions.getData()[0] / 2.0f * OBJECT_SCALE_FLOAT;
+            temp[1] = targetPositiveDimensions.getData()[1] / 2.0f * OBJECT_SCALE_FLOAT;
             targetPositiveDimensions.setData(temp);
 
 
@@ -256,18 +234,19 @@ public class DemoRenderer implements GLSurfaceView.Renderer, SampleAppRendererCo
             float ratio = 1.0f;
             if (mTextures.get(textureIndex).mSuccess) {
                 ratio = keyframeQuadAspectRatio;
-            } else {
-                ratio = targetPositiveDimensions.getData()[1]
-                        / targetPositiveDimensions.getData()[0];
+//            } else
+//                {
+//                ratio = targetPositiveDimensions.getData()[1]
+//                        / targetPositiveDimensions.getData()[0];
             }
 //            add rotate if necessary
-//            Matrix.setRotateM(modelViewMatrix, 0, mAngle, 0, 0, -1f);
+//            Matrix.setRotateM(mModelViewMatrix, 0, mAngle, 0, 0, -1f);
             Matrix.rotateM(modelViewMatrix, 0, mX, 0, 1, 0);
             Matrix.rotateM(modelViewMatrix, 0, mY, 1, 0, 0);
 
-            Matrix.scaleM(modelViewMatrix, 0, targetPositiveDimensions.getData()[0] * OBJECT_SCALE_FLOAT,
-                    targetPositiveDimensions.getData()[0] * ratio * OBJECT_SCALE_FLOAT,
-                    targetPositiveDimensions.getData()[0] * OBJECT_SCALE_FLOAT);
+            Matrix.scaleM(modelViewMatrix, 0, targetPositiveDimensions.getData()[0],
+                    targetPositiveDimensions.getData()[0] * ratio,
+                    targetPositiveDimensions.getData()[0]);
             Matrix.translateM(modelViewMatrix, 0, 0.0f, 0.0f,
                     0);
             Matrix.multiplyMM(modelViewProjection, 0, projectionMatrix, 0, modelViewMatrix, 0);
@@ -336,7 +315,7 @@ public class DemoRenderer implements GLSurfaceView.Renderer, SampleAppRendererCo
         mActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
         intersection = SampleMath.getPointToPlaneIntersection(SampleMath
                         .Matrix44FInverse(tappingProjectionMatrix),
-                modelViewMatrix, metrics.widthPixels, metrics.heightPixels,
+                mModelViewMatrix, metrics.widthPixels, metrics.heightPixels,
                 new Vec2F(x, y), new Vec3F(0, 0, 0), new Vec3F(0, 0, 1));
 
         // The target returns as pose the center of the trackable. The following

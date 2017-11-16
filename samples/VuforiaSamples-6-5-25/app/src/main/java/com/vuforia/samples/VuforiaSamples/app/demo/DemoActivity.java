@@ -12,8 +12,8 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.vuforia.CameraDevice;
@@ -28,10 +28,8 @@ import com.vuforia.Vuforia;
 import com.vuforia.samples.SampleApplication.SampleApplicationControl;
 import com.vuforia.samples.SampleApplication.SampleApplicationException;
 import com.vuforia.samples.SampleApplication.SampleApplicationSession;
-import com.vuforia.samples.SampleApplication.utils.LoadingDialogHandler;
 import com.vuforia.samples.SampleApplication.utils.Texture;
 import com.vuforia.samples.VuforiaSamples.R;
-import com.vuforia.samples.VuforiaSamples.ui.SampleAppMenu.SampleAppMenuInterface;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -39,16 +37,13 @@ import java.util.Vector;
 /**
  *
  */
-public class DemoActivity extends Activity implements SampleApplicationControl,
-        SampleAppMenuInterface {
+public class DemoActivity extends Activity implements SampleApplicationControl {
     private static final String LOGTAG = "DemoActivity";
 
     SampleApplicationSession vuforiaAppSession;
 
     private DataSet mCurrentDataset;
     private int mCurrentDatasetSelectionIndex = 0;
-    private int mStartDatasetsIndex = 0;
-    private int mDatasetsNumber = 0;
     private ArrayList<String> mDatasetStrings = new ArrayList<String>();
 
     // Our OpenGL view:
@@ -65,9 +60,8 @@ public class DemoActivity extends Activity implements SampleApplicationControl,
     private boolean mSwitchDatasetAsap = false;
     private boolean mExtendedTracking = false;
 
-    private RelativeLayout mUILayout;
-
-    LoadingDialogHandler loadingDialogHandler = new LoadingDialogHandler(this);
+    private View mloadingLayout;
+    private ViewGroup mContainer;
 
     // Alert Dialog used to display SDK errors
     private AlertDialog mErrorDialog;
@@ -82,8 +76,7 @@ public class DemoActivity extends Activity implements SampleApplicationControl,
         super.onCreate(savedInstanceState);
 
         vuforiaAppSession = new SampleApplicationSession(this);
-
-        startLoadingAnimation();
+        setContentView(R.layout.demo);
 //        mDatasetStrings.add("StonesAndChips.xml");
         mDatasetStrings.add("Dmall.xml");
         mDatasetStrings.add("Tarmac.xml");
@@ -92,10 +85,10 @@ public class DemoActivity extends Activity implements SampleApplicationControl,
                 .initAR(this, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         mGestureDetector = new GestureDetector(this, new GestureListener());
-
         // Load any sample specific textures:
         mTextures = new Vector<Texture>();
         loadTextures();
+        initView();
 
     }
 
@@ -163,10 +156,10 @@ public class DemoActivity extends Activity implements SampleApplicationControl,
     // for rendering.
 
     private void loadTextures() {
-        mTextures.add(Texture.loadTextureFromApk("ImageTargets/Buildings.jpeg",
-                getAssets()));
         mTextures.add(Texture.loadTextureFromApk("patrick/patrick.png",
                 getAssets()));
+//        mTextures.add(Texture.loadTextureFromApk("ImageTargets/Buildings.jpeg",
+//                getAssets()));
     }
 
 
@@ -176,7 +169,7 @@ public class DemoActivity extends Activity implements SampleApplicationControl,
         Log.d(LOGTAG, "onResume");
         super.onResume();
 
-        showProgressIndicator(true);
+        showLoading(true);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
@@ -249,25 +242,27 @@ public class DemoActivity extends Activity implements SampleApplicationControl,
     }
 
 
-    private void startLoadingAnimation() {
-        mUILayout = (RelativeLayout) View.inflate(this, R.layout.camera_overlay,
-                null);
+    private void initView() {
+        mloadingLayout = findViewById(R.id.ll_loading);
+        mloadingLayout.setVisibility(View.VISIBLE);
+        mContainer = (ViewGroup) findViewById(R.id.rl_container);
 
-        mUILayout.setVisibility(View.VISIBLE);
-        mUILayout.setBackgroundColor(Color.BLACK);
+//        initApplicationAR();
+        // Create OpenGL ES view:
+        int depthSize = 16;
+        int stencilSize = 0;
+        boolean translucent = Vuforia.requiresAlpha();
 
-        // Gets a reference to the loading dialog
-        loadingDialogHandler.mLoadingDialogContainer = mUILayout
-                .findViewById(R.id.loading_indicator);
+        mGlView = new DemoGLView(this);
+        mGlView.init(translucent, depthSize, stencilSize);
 
-        // Shows the loading indicator at start
-        loadingDialogHandler
-                .sendEmptyMessage(LoadingDialogHandler.SHOW_LOADING_DIALOG);
+        mRenderer = new DemoRenderer(this, vuforiaAppSession);
+        mRenderer.setTextures(mTextures);
+        mGlView.setRenderer(mRenderer);
 
-        // Adds the inflated layout to the view
-        addContentView(mUILayout, new LayoutParams(LayoutParams.MATCH_PARENT,
+        mContainer.removeAllViews();
+        mContainer.addView(mGlView, new LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.MATCH_PARENT));
-
     }
 
 
@@ -355,28 +350,24 @@ public class DemoActivity extends Activity implements SampleApplicationControl,
                 CameraDevice.getInstance().setFocusMode(CameraDevice.FOCUS_MODE.FOCUS_MODE_NORMAL);
             }
         }
-        showProgressIndicator(false);
+        showLoading(false);
     }
 
 
-    public void showProgressIndicator(boolean show) {
-        if (loadingDialogHandler != null) {
-            if (show) {
-                loadingDialogHandler
-                        .sendEmptyMessage(LoadingDialogHandler.SHOW_LOADING_DIALOG);
-            } else {
-                loadingDialogHandler
-                        .sendEmptyMessage(LoadingDialogHandler.HIDE_LOADING_DIALOG);
-            }
+    public void showLoading(boolean show) {
+        if (show) {
+            mloadingLayout.setVisibility(View.VISIBLE);
+        } else {
+            mloadingLayout.setVisibility(View.GONE);
         }
     }
 
 
     @Override
     public void onInitARDone(SampleApplicationException exception) {
-
+        showToast("onInitARDone");
         if (exception == null) {
-            initApplicationAR();
+//            initApplicationAR();
 
             mRenderer.setActive(true);
 
@@ -384,14 +375,15 @@ public class DemoActivity extends Activity implements SampleApplicationControl,
             // that the OpenGL ES surface view gets added
             // BEFORE the camera is started and video
             // background is configured.
-            addContentView(mGlView, new LayoutParams(LayoutParams.MATCH_PARENT,
+            mContainer.removeAllViews();
+            mContainer.addView(mGlView, new LayoutParams(LayoutParams.MATCH_PARENT,
                     LayoutParams.MATCH_PARENT));
 
             // Sets the UILayout to be drawn in front of the camera
-            mUILayout.bringToFront();
+            mloadingLayout.bringToFront();
 
             // Sets the layout background to transparent
-            mUILayout.setBackgroundColor(Color.TRANSPARENT);
+            mloadingLayout.setBackgroundColor(Color.TRANSPARENT);
 
             vuforiaAppSession.startAR(CameraDevice.CAMERA_DIRECTION.CAMERA_DIRECTION_DEFAULT);
 
@@ -523,63 +515,6 @@ public class DemoActivity extends Activity implements SampleApplicationControl,
     boolean isExtendedTrackingActive() {
         return mExtendedTracking;
     }
-
-    final public static int CMD_BACK = -1;
-    final public static int CMD_EXTENDED_TRACKING = 1;
-
-
-    @Override
-    public boolean menuProcess(int command) {
-
-        boolean result = true;
-
-        switch (command) {
-            case CMD_BACK:
-                finish();
-                break;
-            case CMD_EXTENDED_TRACKING:
-                for (int tIdx = 0; tIdx < mCurrentDataset.getNumTrackables(); tIdx++) {
-                    Trackable trackable = mCurrentDataset.getTrackable(tIdx);
-
-                    if (!mExtendedTracking) {
-                        if (!trackable.startExtendedTracking()) {
-                            Log.e(LOGTAG,
-                                    "Failed to start extended tracking target");
-                            result = false;
-                        } else {
-                            Log.d(LOGTAG,
-                                    "Successfully started extended tracking target");
-                        }
-                    } else {
-                        if (!trackable.stopExtendedTracking()) {
-                            Log.e(LOGTAG,
-                                    "Failed to stop extended tracking target");
-                            result = false;
-                        } else {
-                            Log.d(LOGTAG,
-                                    "Successfully started extended tracking target");
-                        }
-                    }
-                }
-
-                if (result)
-                    mExtendedTracking = !mExtendedTracking;
-
-                break;
-
-            default:
-                if (command >= mStartDatasetsIndex
-                        && command < mStartDatasetsIndex + mDatasetsNumber) {
-                    mSwitchDatasetAsap = true;
-                    mCurrentDatasetSelectionIndex = command
-                            - mStartDatasetsIndex;
-                }
-                break;
-        }
-
-        return result;
-    }
-
 
     private void showToast(String text) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
