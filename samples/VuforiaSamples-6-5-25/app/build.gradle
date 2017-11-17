@@ -30,7 +30,6 @@ android {
         noCompress 'dat'
     }
 
-
     buildTypes {
         release {
             minifyEnabled false
