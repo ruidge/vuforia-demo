@@ -13,13 +13,16 @@ package com.vuforia.samples.VuforiaSamples.ui.ActivityList;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.vuforia.samples.VuforiaSamples.R;
+import com.vuforia.samples.VuforiaSamples.utils.SoFileManager;
 
 
 // This activity starts activities which demonstrate the Vuforia features
@@ -44,6 +47,27 @@ public class ActivityLauncher extends ListActivity {
         setListAdapter(adapter);
     }
 
+    private void toDemo() {
+        SoFileManager.copyVuforia(this);
+        if (SoFileManager.loadVuforia(this)) {
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    toDemoActivity();
+                }
+            });
+        } else {
+            Toast.makeText(this, "没有驱动文件", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void toDemoActivity() {
+        Intent intent = new Intent();
+        String packageName = getPackageName();
+        String mClassToLaunch = packageName + "." + "app.demo.DemoActivity";
+        intent.setClassName(packageName, mClassToLaunch);
+        startActivity(intent);
+    }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
@@ -53,11 +77,8 @@ public class ActivityLauncher extends ListActivity {
 
         switch (position) {
             case 0:
-                intent = new Intent();
-                String packageName = getPackageName();
-                String mClassToLaunch = packageName + "." + "app.demo.DemoActivity";
-                intent.setClassName(packageName, mClassToLaunch);
-                break;
+                toDemo();
+                return;
             case 1:
                 intent.putExtra("ACTIVITY_TO_LAUNCH",
                         "app.ImageTargets.ImageTargets");
