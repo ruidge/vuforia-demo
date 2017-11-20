@@ -56,5 +56,5 @@ android {
 }
 
 dependencies {
-    compile files("$VUFORIA_SDK_DIR/$JAR_DIR/Vuforia-zr.jar")
+    compile files("$VUFORIA_SDK_DIR/$JAR_DIR/Vuforia-lf.jar")
 }

@@ -191,6 +191,12 @@ public class DemoRenderer implements GLSurfaceView.Renderer, SampleAppRendererCo
         float temp[] = {0.0f, 0.0f, 0.0f};
         targetPositiveDimensions.setData(temp);
 
+//        if (tappingProjectionMatrix == null)
+        {
+            tappingProjectionMatrix = new Matrix44F();
+            tappingProjectionMatrix.setData(projectionMatrix);
+        }
+
         // Did we find any trackables this frame?
         for (int tIdx = 0; tIdx < state.getNumTrackableResults(); tIdx++) {
             TrackableResult result = state.getTrackableResult(tIdx);
@@ -202,12 +208,6 @@ public class DemoRenderer implements GLSurfaceView.Renderer, SampleAppRendererCo
                     .convertPose2GLMatrix(result.getPose());
 
             float[] modelViewMatrix = mModelViewMatrix.getData();
-//            if (tappingProjectionMatrix == null)
-            {
-                tappingProjectionMatrix = new Matrix44F();
-                tappingProjectionMatrix.setData(projectionMatrix);
-            }
-
 //            int textureIndex = trackable.getName().equalsIgnoreCase("stones") ? 0
 //                    : 1;
             int textureIndex = trackable.getName().equalsIgnoreCase("Dmall") ? 0
