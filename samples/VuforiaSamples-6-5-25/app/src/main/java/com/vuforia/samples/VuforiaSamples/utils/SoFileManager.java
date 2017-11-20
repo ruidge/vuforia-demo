@@ -2,6 +2,8 @@ package com.vuforia.samples.VuforiaSamples.utils;
 
 import android.content.Context;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import java.io.File;
@@ -18,9 +20,12 @@ import java.io.OutputStream;
 public class SoFileManager {
     private static final String TAG = "SoFileManager";
     private static String vuforiaName = "libVuforia.so";
+    private static String dataPre = "/data/data/";
 
     private static File getInternSoDir(Context context) {
         File soLib = context.getDir("solib", Context.MODE_PRIVATE);
+//        File soLib = context.getFilesDir();
+//        File soLib = new File(dataPre + context.getPackageName() + "/files/");
         if (!soLib.exists()) {
             soLib.mkdirs();
         }
@@ -63,7 +68,7 @@ public class SoFileManager {
         }
     }
 
-    public static boolean copyVuforia(Context context) {
+    private static boolean copyVuforia(Context context) {
         File soFrom = getVuforiaSDFile(context);
         File soTo = getVuforiaInternFile(context);
         if (soFrom != null && soTo != null) {
@@ -76,20 +81,26 @@ public class SoFileManager {
     private static boolean isFileValid(File file) {
         if (file != null && file.length() > 0) {
             Log.w(TAG, "file length is : " + file.length() / 1024 + "kb");
+            Log.w(TAG, "file length is : " + file.length() / 1024 / 1024 + "mb");
             return true;
         }
         return false;
 
     }
 
-    public static boolean loadVuforia(Context context) {
-        File file = getVuforiaInternFile(context);
+    public static boolean loadVuforia(final Context context, final Runnable callback) {
+        final File file = getVuforiaInternFile(context);
+        if (!isFileValid(file)) {
+            copyVuforia(context);
+        }
+        Log.w(TAG, "loadVuforia path : " + file.getAbsolutePath());
         if (isFileValid(file)) {
             System.load(file.getAbsolutePath());
+            new Handler(Looper.getMainLooper()).post(callback);
             return true;
+        } else {
+            return false;
         }
-        return false;
-
     }
 
     public static boolean copySdcardFile(String fromFile, String toFile) {

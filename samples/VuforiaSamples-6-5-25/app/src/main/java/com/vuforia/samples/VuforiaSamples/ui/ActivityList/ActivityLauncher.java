@@ -48,17 +48,12 @@ public class ActivityLauncher extends ListActivity {
     }
 
     private void toDemo() {
-        SoFileManager.copyVuforia(this);
-        if (SoFileManager.loadVuforia(this)) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    toDemoActivity();
-                }
-            }, 2000);
-        } else {
-            Toast.makeText(this, "没有驱动文件", Toast.LENGTH_SHORT).show();
-        }
+        SoFileManager.loadVuforia(this, new Runnable() {
+            @Override
+            public void run() {
+                toDemoActivity();
+            }
+        });
     }
 
     private void toDemoActivity() {
