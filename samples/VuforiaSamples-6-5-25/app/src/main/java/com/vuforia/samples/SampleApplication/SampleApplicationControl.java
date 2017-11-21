@@ -28,6 +28,10 @@ public interface SampleApplicationControl {
     boolean doStartTrackers();
 
 
+    //拆分doStartTrackers出一个异常回调
+    void doStartCamera();
+
+
     // To be called to stop the trackers
     boolean doStopTrackers();
 

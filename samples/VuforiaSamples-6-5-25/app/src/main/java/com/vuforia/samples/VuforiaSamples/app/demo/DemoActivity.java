@@ -81,7 +81,6 @@ public class DemoActivity extends Activity implements SampleApplicationControl {
         mTextures = new Vector<Texture>();
         loadTextures();
         initView();
-
     }
 
     // Process Single Tap event to trigger autofocus
@@ -318,7 +317,7 @@ public class DemoActivity extends Activity implements SampleApplicationControl {
 
     @Override
     public void onVuforiaStarted() {
-        Log.w(TAG, "onVuforiaStarted: " + System.currentTimeMillis());
+        Log.w(TAG, "onVuforiaStarted: ");
         mRenderer.updateConfiguration();
 
         // Set camera focus mode
@@ -383,6 +382,10 @@ public class DemoActivity extends Activity implements SampleApplicationControl {
         }
     }
 
+    @Override
+    public void doStartCamera(){
+        vuforiaAppSession.startCamera(CameraDevice.CAMERA_DIRECTION.CAMERA_DIRECTION_DEFAULT);
+    }
 
     @Override
     public boolean doInitTrackers() {

@@ -140,7 +140,33 @@ public class SampleApplicationSession implements UpdateCallbackInterface {
 
 
     // Starts Vuforia, initialize and starts the camera and start the trackers
-    private void startCameraAndTrackers(int camera) throws SampleApplicationException {
+    private void startTrackers() throws SampleApplicationException {
+        String error;
+        if (!mCameraRunning) {
+            error = "should startCamera(int) first";
+            Log.e(LOGTAG, error);
+            throw new SampleApplicationException(
+                    SampleApplicationException.CAMERA_INITIALIZATION_FAILURE, error);
+
+        }
+        mSessionControl.doStartTrackers();
+    }
+
+    public void startCamera(int camera) {
+        mCamera = camera;
+        SampleApplicationException exception = null;
+        try {
+            startRealCamera(camera);
+        } catch (SampleApplicationException e) {
+            exception = e;
+            e.printStackTrace();
+        }
+        if (exception != null) {
+            mSessionControl.onARException(exception);
+        }
+    }
+
+    private void startRealCamera(int camera) throws SampleApplicationException {
         String error;
         if (mCameraRunning) {
             error = "Camera already running, unable to open again";
@@ -149,7 +175,7 @@ public class SampleApplicationSession implements UpdateCallbackInterface {
                     SampleApplicationException.CAMERA_INITIALIZATION_FAILURE, error);
         }
 
-        mCamera = camera;
+//        mCamera = camera;
         if (!CameraDevice.getInstance().init(camera)) {
             error = "Unable to open camera device: " + camera;
             Log.e(LOGTAG, error);
@@ -171,9 +197,6 @@ public class SampleApplicationSession implements UpdateCallbackInterface {
             throw new SampleApplicationException(
                     SampleApplicationException.CAMERA_INITIALIZATION_FAILURE, error);
         }
-
-        mSessionControl.doStartTrackers();
-
         mCameraRunning = true;
     }
 
@@ -328,7 +351,10 @@ public class SampleApplicationSession implements UpdateCallbackInterface {
         // Initialize with invalid value:
         private int mProgressValue = -1;
 
+        private long startTs;
+
         protected Boolean doInBackground(Void... params) {
+            startTs = System.currentTimeMillis();
             // Prevent the onDestroy() method to overlap with initialization:
             synchronized (mLifecycleLock) {
                 Vuforia.setInitParameters(mActivity, mVuforiaFlags, BuildConfig.LICENSE_KEY);
@@ -367,7 +393,7 @@ public class SampleApplicationSession implements UpdateCallbackInterface {
         protected void onPostExecute(Boolean result) {
             // Done initializing Vuforia, proceed to next application
             // initialization status:
-
+            Log.d(LOGTAG, "init Vuforia duration : " + (System.currentTimeMillis() - startTs));
             Log.d(LOGTAG, "InitVuforiaTask.onPostExecute: execution "
                     + (result ? "successful" : "failed"));
 
@@ -532,7 +558,8 @@ public class SampleApplicationSession implements UpdateCallbackInterface {
             // Prevent the concurrent lifecycle operations:
             synchronized (mLifecycleLock) {
                 try {
-                    startCameraAndTrackers(mCamera);
+                    mSessionControl.doStartCamera();
+                    startTrackers();
                 } catch (SampleApplicationException e) {
                     Log.e(LOGTAG, "StartVuforiaTask.doInBackground: Could not start AR with exception: " + e);
                     vuforiaException = e;
