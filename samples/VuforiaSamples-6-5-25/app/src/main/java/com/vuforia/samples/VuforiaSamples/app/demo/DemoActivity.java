@@ -1,11 +1,8 @@
 package com.vuforia.samples.VuforiaSamples.app.demo;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -38,7 +35,7 @@ import java.util.Vector;
  *
  */
 public class DemoActivity extends Activity implements SampleApplicationControl {
-    private static final String LOGTAG = "DemoActivity";
+    private static final String TAG = "DemoActivity";
 
     SampleApplicationSession vuforiaAppSession;
 
@@ -63,16 +60,13 @@ public class DemoActivity extends Activity implements SampleApplicationControl {
     private View mloadingLayout;
     private ViewGroup mContainer;
 
-    // Alert Dialog used to display SDK errors
-    private AlertDialog mErrorDialog;
-
     private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
 
     // Called when the activity first starts or the user navigates back to an
     // activity.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(LOGTAG, "onCreate");
+        Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
 
         vuforiaAppSession = new SampleApplicationSession(this);
@@ -81,9 +75,7 @@ public class DemoActivity extends Activity implements SampleApplicationControl {
         mDatasetStrings.add("Dmall.xml");
         mDatasetStrings.add("Tarmac.xml");
 
-        vuforiaAppSession
-                .initAR(this, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
+        vuforiaAppSession.initAR(this, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         mGestureDetector = new GestureDetector(this, new GestureListener());
         // Load any sample specific textures:
         mTextures = new Vector<Texture>();
@@ -166,7 +158,7 @@ public class DemoActivity extends Activity implements SampleApplicationControl {
     // Called when the activity will start interacting with the user.
     @Override
     protected void onResume() {
-        Log.d(LOGTAG, "onResume");
+        Log.d(TAG, "onResume");
         super.onResume();
 
         showLoading(true);
@@ -180,7 +172,7 @@ public class DemoActivity extends Activity implements SampleApplicationControl {
     // Callback for configuration changes the activity handles itself
     @Override
     public void onConfigurationChanged(Configuration config) {
-        Log.d(LOGTAG, "onConfigurationChanged");
+        Log.d(TAG, "onConfigurationChanged");
         super.onConfigurationChanged(config);
 
         vuforiaAppSession.onConfigurationChanged();
@@ -190,7 +182,7 @@ public class DemoActivity extends Activity implements SampleApplicationControl {
     // Called when the system is about to start resuming a previous activity.
     @Override
     protected void onPause() {
-        Log.d(LOGTAG, "onPause");
+        Log.d(TAG, "onPause");
         super.onPause();
 
         if (mGlView != null) {
@@ -201,7 +193,7 @@ public class DemoActivity extends Activity implements SampleApplicationControl {
         try {
             vuforiaAppSession.pauseAR();
         } catch (SampleApplicationException e) {
-            Log.e(LOGTAG, e.getString());
+            Log.e(TAG, e.getString());
         }
     }
 
@@ -209,13 +201,13 @@ public class DemoActivity extends Activity implements SampleApplicationControl {
     // The final call you receive before your activity is destroyed.
     @Override
     protected void onDestroy() {
-        Log.d(LOGTAG, "onDestroy");
+        Log.d(TAG, "onDestroy");
         super.onDestroy();
 
         try {
             vuforiaAppSession.stopAR();
         } catch (SampleApplicationException e) {
-            Log.e(LOGTAG, e.getString());
+            Log.e(TAG, e.getString());
         }
 
         // Unload texture:
@@ -225,29 +217,11 @@ public class DemoActivity extends Activity implements SampleApplicationControl {
         System.gc();
     }
 
-
-    // Initializes AR application components.
-    private void initApplicationAR() {
-        // Create OpenGL ES view:
-        int depthSize = 16;
-        int stencilSize = 0;
-        boolean translucent = Vuforia.requiresAlpha();
-
-        mGlView = new DemoGLView(this);
-        mGlView.init(translucent, depthSize, stencilSize);
-
-        mRenderer = new DemoRenderer(this, vuforiaAppSession);
-        mRenderer.setTextures(mTextures);
-        mGlView.setRenderer(mRenderer);
-    }
-
-
     private void initView() {
         mloadingLayout = findViewById(R.id.ll_loading);
         mloadingLayout.setVisibility(View.VISIBLE);
         mContainer = (ViewGroup) findViewById(R.id.rl_container);
 
-//        initApplicationAR();
         // Create OpenGL ES view:
         int depthSize = 16;
         int stencilSize = 0;
@@ -257,12 +231,14 @@ public class DemoActivity extends Activity implements SampleApplicationControl {
         mGlView.init(translucent, depthSize, stencilSize);
 
         mRenderer = new DemoRenderer(this, vuforiaAppSession);
+        mRenderer.setActive(true);
         mRenderer.setTextures(mTextures);
         mGlView.setRenderer(mRenderer);
 
         mContainer.removeAllViews();
         mContainer.addView(mGlView, new LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.MATCH_PARENT));
+        mRenderer.updateConfiguration();
     }
 
 
@@ -298,7 +274,7 @@ public class DemoActivity extends Activity implements SampleApplicationControl {
 
             String name = "Current Dataset : " + trackable.getName();
             trackable.setUserData(name);
-            Log.d(LOGTAG, "UserData:Set the following user data "
+            Log.d(TAG, "UserData:Set the following user data "
                     + (String) trackable.getUserData());
         }
 
@@ -334,6 +310,7 @@ public class DemoActivity extends Activity implements SampleApplicationControl {
     @Override
     public void onVuforiaResumed() {
         if (mGlView != null) {
+            showLoading(false);
             mGlView.setVisibility(View.VISIBLE);
             mGlView.onResume();
         }
@@ -341,6 +318,7 @@ public class DemoActivity extends Activity implements SampleApplicationControl {
 
     @Override
     public void onVuforiaStarted() {
+        Log.w(TAG, "onVuforiaStarted: " + System.currentTimeMillis());
         mRenderer.updateConfiguration();
 
         // Set camera focus mode
@@ -350,7 +328,7 @@ public class DemoActivity extends Activity implements SampleApplicationControl {
                 CameraDevice.getInstance().setFocusMode(CameraDevice.FOCUS_MODE.FOCUS_MODE_NORMAL);
             }
         }
-        showLoading(false);
+//        showLoading(false);
     }
 
 
@@ -364,64 +342,26 @@ public class DemoActivity extends Activity implements SampleApplicationControl {
 
 
     @Override
-    public void onInitARDone(SampleApplicationException exception) {
-        showToast("onInitARDone");
-        if (exception == null) {
-//            initApplicationAR();
+    public void onInitARDone() {
+        Log.w(TAG, "onInitARDone: ");
+        showLoading(false);
+        mRenderer.setHasInitAr(true);
+        mRenderer.setActive(true);
+        mGlView.requestRender();
+        vuforiaAppSession.startAR(CameraDevice.CAMERA_DIRECTION.CAMERA_DIRECTION_DEFAULT);
+    }
 
-            mRenderer.setActive(true);
-
-            // Now add the GL surface view. It is important
-            // that the OpenGL ES surface view gets added
-            // BEFORE the camera is started and video
-            // background is configured.
-            mContainer.removeAllViews();
-            mContainer.addView(mGlView, new LayoutParams(LayoutParams.MATCH_PARENT,
-                    LayoutParams.MATCH_PARENT));
-
-            // Sets the UILayout to be drawn in front of the camera
-            mloadingLayout.bringToFront();
-
-            // Sets the layout background to transparent
-            mloadingLayout.setBackgroundColor(Color.TRANSPARENT);
-
-            vuforiaAppSession.startAR(CameraDevice.CAMERA_DIRECTION.CAMERA_DIRECTION_DEFAULT);
-
-        } else {
-            Log.e(LOGTAG, exception.getString());
+    @Override
+    public void onARException(SampleApplicationException exception) {
+        if (exception != null) {
+            Log.e(TAG, exception.getString());
             showInitializationErrorMessage(exception.getString());
         }
     }
 
-
     // Shows initialization error messages as System dialogs
     public void showInitializationErrorMessage(String message) {
-        final String errorMessage = message;
-        runOnUiThread(new Runnable() {
-            public void run() {
-                if (mErrorDialog != null) {
-                    mErrorDialog.dismiss();
-                }
-
-                // Generates an Alert Dialog to show the error message
-                AlertDialog.Builder builder = new AlertDialog.Builder(
-                        DemoActivity.this);
-                builder
-                        .setMessage(errorMessage)
-                        .setTitle(getString(R.string.INIT_ERROR))
-                        .setCancelable(false)
-                        .setIcon(0)
-                        .setPositiveButton(getString(R.string.button_OK),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        finish();
-                                    }
-                                });
-
-                mErrorDialog = builder.create();
-                mErrorDialog.show();
-            }
-        });
+        showToast(message);
     }
 
 
@@ -434,7 +374,7 @@ public class DemoActivity extends Activity implements SampleApplicationControl {
                     .getClassType());
             if (ot == null || mCurrentDataset == null
                     || ot.getActiveDataSet(0) == null) {
-                Log.d(LOGTAG, "Failed to swap datasets");
+                Log.d(TAG, "Failed to swap datasets");
                 return;
             }
 
@@ -446,6 +386,7 @@ public class DemoActivity extends Activity implements SampleApplicationControl {
 
     @Override
     public boolean doInitTrackers() {
+        Log.w(TAG, "doInitTrackers: ");
         // Indicate if the trackers were initialized correctly
         boolean result = true;
 
@@ -456,11 +397,11 @@ public class DemoActivity extends Activity implements SampleApplicationControl {
         tracker = tManager.initTracker(ObjectTracker.getClassType());
         if (tracker == null) {
             Log.e(
-                    LOGTAG,
+                    TAG,
                     "Tracker not initialized. Tracker already initialized or the camera is already started");
             result = false;
         } else {
-            Log.i(LOGTAG, "Tracker successfully initialized");
+            Log.i(TAG, "Tracker successfully initialized");
         }
         return result;
     }
@@ -468,6 +409,7 @@ public class DemoActivity extends Activity implements SampleApplicationControl {
 
     @Override
     public boolean doStartTrackers() {
+        Log.w(TAG, "doStartTrackers: ");
         // Indicate if the trackers were started correctly
         boolean result = true;
 

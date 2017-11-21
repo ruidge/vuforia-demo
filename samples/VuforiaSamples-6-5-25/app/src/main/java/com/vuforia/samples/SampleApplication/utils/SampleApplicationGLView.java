@@ -9,19 +9,15 @@ countries.
 
 package com.vuforia.samples.SampleApplication.utils;
 
-import javax.microedition.khronos.egl.EGL10;
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.egl.EGLContext;
-import javax.microedition.khronos.egl.EGLDisplay;
-
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
-import android.view.MotionEvent;
 
-import com.vuforia.samples.SampleApplication.SampleAppRenderer;
-import com.vuforia.samples.VuforiaSamples.app.ImageTargets.ImageTargetRenderer;
+import javax.microedition.khronos.egl.EGL10;
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.egl.EGLContext;
+import javax.microedition.khronos.egl.EGLDisplay;
 
 // Support class for the Vuforia sample applications
 // Responsible for setting up and configuring the OpenGL surface view.

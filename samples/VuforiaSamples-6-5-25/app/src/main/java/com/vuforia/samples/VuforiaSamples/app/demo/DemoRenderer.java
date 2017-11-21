@@ -63,7 +63,9 @@ public class DemoRenderer implements GLSurfaceView.Renderer, SampleAppRendererCo
     private Vec3F targetPositiveDimensions = null;
 
     // These hold the aspect ratio of both the the keyframe
-    float keyframeQuadAspectRatio = 1.0f;
+    private float keyframeQuadAspectRatio = 1.0f;
+
+    private boolean hasInitAr = false;
 
     public DemoRenderer(DemoActivity activity, SampleApplicationSession session) {
         mActivity = activity;
@@ -180,6 +182,10 @@ public class DemoRenderer implements GLSurfaceView.Renderer, SampleAppRendererCo
     public void renderFrame(State state, float[] projectionMatrix) {
         // Renders video background replacing Renderer.DrawVideoBackground()
         mSampleAppRenderer.renderVideoBackground();
+
+        if (!hasInitAr) {
+            return;
+        }
 
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
@@ -366,5 +372,9 @@ public class DemoRenderer implements GLSurfaceView.Renderer, SampleAppRendererCo
 
     public void setZ(float mZ) {
         this.mZ = mZ;
+    }
+
+    public void setHasInitAr(boolean hasInitAr) {
+        this.hasInitAr = hasInitAr;
     }
 }
