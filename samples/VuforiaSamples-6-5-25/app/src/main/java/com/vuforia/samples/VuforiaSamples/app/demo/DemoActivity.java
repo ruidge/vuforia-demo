@@ -75,7 +75,7 @@ public class DemoActivity extends Activity implements SampleApplicationControl {
         mDatasetStrings.add("Dmall.xml");
         mDatasetStrings.add("Tarmac.xml");
 
-        vuforiaAppSession.initAR(this, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        vuforiaAppSession.initAR(this);
         mGestureDetector = new GestureDetector(this, new GestureListener());
         // Load any sample specific textures:
         mTextures = new Vector<Texture>();

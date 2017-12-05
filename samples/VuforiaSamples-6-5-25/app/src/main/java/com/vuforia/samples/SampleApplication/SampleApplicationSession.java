@@ -13,9 +13,7 @@ package com.vuforia.samples.SampleApplication;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.util.Log;
-import android.view.OrientationEventListener;
 import android.view.WindowManager;
 
 import com.vuforia.CameraDevice;
@@ -67,35 +65,12 @@ public class SampleApplicationSession implements UpdateCallbackInterface {
 
 
     // Initializes Vuforia and sets up preferences.
-    public void initAR(Activity activity, int screenOrientation) {
+    public void initAR(Activity activity) {
         SampleApplicationException vuforiaException = null;
         mActivity = activity;
 
-        if ((screenOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR)
-                && (Build.VERSION.SDK_INT > Build.VERSION_CODES.FROYO))
-            screenOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR;
-
-        // Use an OrientationChangeListener here to capture all orientation changes.  Android
-        // will not send an Activity.onConfigurationChanged() callback on a 180 degree rotation,
-        // ie: Left Landscape to Right Landscape.  Vuforia needs to react to this change and the
-        // SampleApplicationSession needs to update the Projection Matrix.
-        OrientationEventListener orientationEventListener = new OrientationEventListener(mActivity) {
-            @Override
-            public void onOrientationChanged(int i) {
-                int activityRotation = mActivity.getWindowManager().getDefaultDisplay().getRotation();
-                if (mLastRotation != activityRotation) {
-                    mLastRotation = activityRotation;
-                }
-            }
-
-            int mLastRotation = -1;
-        };
-
-        if (orientationEventListener.canDetectOrientation())
-            orientationEventListener.enable();
-
         // Apply screen orientation
-        mActivity.setRequestedOrientation(screenOrientation);
+        mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         // As long as this window is visible to the user, keep the device's
         // screen turned on and bright:
